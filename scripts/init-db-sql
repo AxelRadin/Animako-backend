@@ -1,0 +1,8 @@
+-- Création d'une nouvelle base de données
+CREATE DATABASE animako_db;
+
+-- Création d'un nouvel utilisateur
+CREATE USER animako WITH ENCRYPTED PASSWORD 'password';
+
+-- Attribution des droits à l'utilisateur
+GRANT ALL PRIVILEGES ON DATABASE animako_db TO animako;
