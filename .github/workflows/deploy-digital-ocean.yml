@@ -1,0 +1,29 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@main
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.DIGITALOCEAN_SSH_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -t ed25519 161.35.106.48 >> ~/.ssh/known_hosts
+
+    - name: Deploy to DigitalOcean
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+        IP_ADRESS_DIGITAL_OCEAN: ${{ secrets.IP_ADRESS_DIGITAL_OCEAN }}
+        USER_DIGITAL_OCEAN: ${{ secrets.USER_DIGITAL_OCEAN }}
+      run: 
+        ssh ${{ secrets.USER_DIGITAL_OCEAN }}@${{ secrets.IP_ADRESS_DIGITAL_OCEAN }} 'bash -s' < ./scripts/deploy-digital-ocean.sh
